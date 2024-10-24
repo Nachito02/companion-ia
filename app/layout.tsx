@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
+import { ThemeProvider } from "@/components/theme-provider";
 
 
 export const metadata: Metadata = {
@@ -15,9 +16,13 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider signInFallbackRedirectUrl={"/"}>
-      <html lang="en">
+      <html lang="en" suppressHydrationWarning>
         <body>
-          {children}
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+
+            {children}
+          </ThemeProvider>
+
         </body>
       </html>
     </ClerkProvider>
