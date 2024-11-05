@@ -38,7 +38,7 @@ const ImageUpload = ({ value, onChange, disabled }: ImageUploadProps) => {
                 }} uploadPreset="qqeo7owm">
                 <div className="p-4 border-4 border-dashed border-primary/10 rounded-lg hover:opacity-75 transition flex flex-col space-y-2 items-center justify-center">
                     <div className="relative h-40 w-40">
-                        <Image fill alt="Upload" src={value || "/placeholder.jpg"} className="rounded-lg object-cover" />
+                        <Image fill alt="Upload" src={value || "/placeholder.svg"} className="rounded-lg object-cover" />
                     </div>
                 </div>
             </CldUploadButton>
