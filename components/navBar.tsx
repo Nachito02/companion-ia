@@ -30,7 +30,7 @@ const NavBar = () => {
                 </Button>
 
                 <ModeToggle />
-                <UserButton />
+                <UserButton afterSwitchSessionUrl='/' />
             </div>
         </div>
     )
