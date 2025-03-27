@@ -1,6 +1,6 @@
 'use client'
 
-import { Menu, Sparkle, Sparkles } from 'lucide-react'
+import {  Sparkles } from 'lucide-react'
 import Link from 'next/link'
 import React from 'react'
 import { Poppins } from 'next/font/google'
@@ -30,7 +30,7 @@ const NavBar = () => {
                 </Button>
 
                 <ModeToggle />
-                <UserButton afterSwitchSessionUrl='/' />
+                <UserButton  afterSwitchSessionUrl='/' />
             </div>
         </div>
     )
