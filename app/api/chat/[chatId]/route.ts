@@ -1,11 +1,13 @@
-import { streamText } from "ai";
-import {  currentUser } from "@clerk/nextjs/server";
+import { LangChainAdapter, streamText } from "ai";
+import { currentUser } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { MemoryManager } from "@/lib/memory";
 import { rateLimit } from "@/lib/rate-limit";
 import prismadb from "@/lib/prismadb";
 import { Replicate } from "@langchain/community/llms/replicate";
 import { deepinfra } from "@ai-sdk/deepinfra";
+import { createOpenAI, openai } from "@ai-sdk/openai";
+import { ChatOpenAI } from "@langchain/openai";
 export async function POST(
   request: Request,
   { params }: { params: { chatId: string } }
@@ -97,13 +99,9 @@ export async function POST(
           `
            ONLY generate NO more than three sentences as ${name}. DO NOT generate more than three sentences. 
            Make sure the output you generate starts with '${name}:' and ends with a period.
-    
            ${companion.description}
-    
            Below are relevant details about ${name}'s past and the conversation you are in.
            ${relevantHistory}
-    
-    
            ${recentChatHistory}\n${name}:`
         )
         .catch(console.error)
@@ -115,14 +113,17 @@ export async function POST(
 
     const response = chunks[0];
 
+    console.log(response);
+
     await memoryManager.writeToHistory("" + response.trim(), companionKey);
 
     var Readable = require("stream").Readable;
 
     let s = new Readable();
-
     s.push(response);
     s.push(null);
+
+    console.log(s);
 
     if (response !== undefined && response.length > 1) {
       memoryManager.writeToHistory("" + response.trim(), companionKey);
@@ -144,12 +145,14 @@ export async function POST(
       },
     });
 
-    const { textStream } = streamText({
-      model: deepinfra("meta-llama/Meta-Llama-3.1-405B-Instruct"),
-      prompt: s,
+    const openAi = new ChatOpenAI({
+      model: "gpt-3.5-turbo-instruct",
+      apiKey: process.env.OPENAI_API_KEY,
     });
 
-    return textStream;
+    const stream = await openAi.stream(prompt);
+
+    return LangChainAdapter.toDataStreamResponse(stream);
   } catch (error) {
     console.log(error);
     return new NextResponse("Internal Error", { status: 500 });

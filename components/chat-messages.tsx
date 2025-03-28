@@ -43,10 +43,10 @@ const ChatMessages = ({
         isLoading={fakeLoading}
       />
 
-      {messages.map((message) => (
+      {messages.map((message, i) => (
         <ChatMessage
           role={message.role}
-          key={message.content}
+          key={i}
           content={message.content}
           src={message.src}
         />
